@@ -1,0 +1,14 @@
+<volume_table>
+  <volume name="TRD_BLOCK_ID0" size="65536"/>
+  <volume name="TRD_BLOCK_ID1" size="65536"/>
+  <volume name="RCRT_BLOCK_ID0" size="65536"/>
+  <volume name="RCRT_BLOCK_ID1" size="65536"/>
+  <volume name="RCRT_BLOCK_ID2" size="65536"/>
+  <volume name="RCRT_BLOCK_ID3" size="65536"/>
+  <volume name="STR_BLOCK_ID0" size="65536"/>
+  <volume name="STR_BLOCK_ID1" size="65536"/>
+<!--  
+  <volume name="STR_BLOCK_ID2" size="65536"/>
+  <volume name="STR_BLOCK_ID3" size="65536"/>
+  -->
+</volume_table>

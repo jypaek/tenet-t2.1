@@ -1,0 +1,70 @@
+
+# Below line can be uncommented to compile without timesync
+NO_TIMESYNC=1
+
+# Below line can be uncommented to test in 1-hop without routing/transport
+#ONE_HOP_TASKING=1
+
+
+
+#################################################
+# Set Path..........
+#################################################
+TENETDIR := ../..
+TENETLIB := $(TENETDIR)/lib
+TENETPLATFORM := $(TENETDIR)/platform
+
+ifndef TOSDIR
+    TOSDIR := $(shell ncc -print-tosdir)
+endif
+include $(MAKERULES)
+
+ifndef NP
+    # No network programming... save ROM/RAM.
+    TINYOS_NP := NONE 
+endif
+
+
+#################################################
+TENETINC += -I$(TENETDIR)/tasklets
+ifeq ($(PLATFORM),telosb)
+    TENETINC += -I$(TENETDIR)/tasklets/platform/$(PLATFORM)
+endif
+
+
+#################################################
+TENETINC += -I. -I$(TENETLIB)
+TENETINC += -I$(TENETLIB)/timer
+TENETINC += -I$(TENETLIB)/transport
+TENETINC += -I$(TENETLIB)/trd
+
+ifndef NO_TIMESYNC
+    TENETDEF += -DGLOBAL_TIME=1
+    TENETINC += -I$(TOSDIR)/lib/ftsp
+endif
+
+
+#################################################
+ifdef ONE_HOP_TASKING
+    TENETDEF += -DONE_HOP_TASKING=1
+else
+    TENETINC += -I../../lib/routing
+    TENETINC += -I../../lib/net -I../../lib/net/lqirp
+    TENETINC += -I$(TOSDIR)/lib/net -I$(TOSDIR)/lib/net/lqi
+endif
+
+
+#################################################
+TENETDEF += -DMHOP_QUEUE_SIZE=16 
+#TENETDEF += -DRAM_TRD=1
+#TENETDEF += -DRCRT_2_CON=1
+TENETDEF += -DNEIGHBOR_TABLE_SIZE=0
+TENETDEF += -DCHILDREN_TABLE_SIZE=40
+
+
+#################################################
+
+CFLAGS += -DTOSH_DATA_LENGTH=76
+
+CFLAGS += $(TENETINC) $(TENETDEF)
+

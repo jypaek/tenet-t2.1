@@ -1,0 +1,21 @@
+
+TENETPATH = ../..
+
+MASTERPATH = ../../master
+MOTEPATH = ../../mote
+
+INCPATH = $(MASTERPATH)/include
+LIBPATH = $(MASTERPATH)/tasklib
+TRDPATH = $(MASTERPATH)/trd
+TRPATH = $(MASTERPATH)/transport
+SFPATH = $(TENETPATH)/tools/sf
+
+MOTELIB = $(MOTEPATH)/lib
+MOTEROUTERPATH = $(MOTELIB)/routing
+MOTETRANSPORTPATH = $(MOTELIB)/transport
+MOTETRDPATH = $(MOTELIB)/trd
+MOTETIMESYNCPATH = $(TOSDIR)/lib/ftsp
+
+include $(INCPATH)/Makerules
+
+

@@ -1,0 +1,20 @@
+COMPONENT=BaseStationC
+
+ifdef SNOOP
+    CFLAGS += -DCC2420_NO_ACKNOWLEDGEMENTS
+    CFLAGS += -DCC2420_NO_ADDRESS_RECOGNITION
+endif
+ifndef NP
+    # No network programming... save ROM/RAM.
+    TINYOS_NP := NONE 
+endif
+
+# Default was 115200
+CFLAGS += -DBAUDRATE_57600
+
+CFLAGS += -DBASE_STATION
+
+CFLAGS += -DTOSH_DATA_LENGTH=76
+
+include $(MAKERULES)
+

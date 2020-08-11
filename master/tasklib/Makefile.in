@@ -1,0 +1,121 @@
+SHELL = /bin/sh
+VPATH = @srcdir@
+
+subdirs = @subdirs@
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = $(exec_prefix)/bin
+infodir = $(prefix)/info
+libdir = $(prefix)/lib/gnudl
+mandir = $(prefix)/man/man1
+
+AR = @AR@
+CC = @CC@
+CXX = @CXX@
+CPPFLAGS = @CPPFLAGS@
+CFLAGS = $(CPPFLAGS) @CFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+INSTALL = @INSTALL@
+
+LIB_TARGET     = libtenet.a
+LIB_TARGET_CPP = libtenet_cpp.a
+
+LIB_OBJECTS     = task_construct.o element_construct.o element_usage.o \
+                  task_error.o tp.o lex.yy.o y.tab.o \
+                  transportAPI.o $(TRPATH)/tr_if.o $(TRPATH)/serviceAPI.o \
+                  $(TRPATH)/service_if.o \
+                  $(SFPATH)/sfsource.o $(INCPATH)/tosmsg.o $(INCPATH)/timeval.o \
+                  task_error.o response.o
+LIB_OBJECTS_CPP = task_construct.p.o element_construct.p.o element_usage.p.o \
+                  task_error.p.o tp.p.o lex.yy.p.o y.tab.p.o \
+                  transportAPI.p.o $(TRPATH)/tr_if.p.o $(TRPATH)/serviceAPI.p.o \
+                  $(TRPATH)/service_if.p.o \
+                  $(SFPATH)/sfsource.p.o $(INCPATH)/tosmsg.p.o $(INCPATH)/timeval.p.o \
+                  task_error.p.o response.p.o
+        
+TENETPATH = ../..
+MASTERPATH = ..
+
+INCPATH = $(MASTERPATH)/include
+TRPATH = $(MASTERPATH)/transport
+SFPATH = $(TENETPATH)/tools/sf
+
+TRDPATH = $(MASTERPATH)/trd
+LIBPATH = $(MASTERPATH)/tasklib
+MOTELIB = $(TENETPATH)/mote/lib
+CYCLOPSLIB = $(TENETPATH)/mote/lib/cyclops
+
+
+LIB_SRC = task_construct.c element_construct.c element_usage.c task_error.c tp.c \
+          $(SFPATH)/sfsource.c $(SFPATH)/platform.c $(INCPATH)/tosmsg.c $(INCPATH)/timeval.c \
+          transportAPI.c $(TRPATH)/tr_if.c \
+          $(TRPATH)/serviceAPI.c $(TRPATH)/service_if.c \
+          task_construct.c response.c
+
+          
+include $(INCPATH)/Makerules
+
+
+CFLAGS += -g -Wall
+CFLAGS += -I. -I$(INCPATH) -I$(SFPATH) -I$(MOTELIB) -I$(TRPATH) -I$(CYCLOPSLIB)
+
+PROGRAMS=yacc_lex $(LIB_TARGET) $(LIB_TARGET_CPP)
+
+all: $(PROGRAMS)
+
+$(LIB_TARGET): $(LIB_OBJECTS)
+	$(AR) scru $(LIB_TARGET) $(LIB_OBJECTS)
+
+$(LIB_TARGET_CPP): $(LIB_OBJECTS_CPP)
+	$(AR) scru $(LIB_TARGET_CPP) $(LIB_OBJECTS_CPP)
+
+%.o: %.c
+	$(CC) -o $*.o -c $(CFLAGS) $*.c
+
+%.p.o: %.c
+	$(CXX) -o $*.p.o -c $(CFLAGS) $*.c
+
+depend: $(LIB_SRC)
+	makedepend $(LIB_SRC)
+
+yacc_lex: y.tab.c lex.yy.c
+
+y.tab.c: parser.y
+	yacc -o y.tab.c -d parser.y
+
+lex.yy.c: lexer.l
+	flex -olex.yy.c lexer.l
+
+parser_standalone: lex.yy.c y.tab.c tp.c element_usage.c 
+	$(CC) $(CFLAGS) -DTP_STANDALONE=1 -o tp lex.yy.c y.tab.c tp.c element_usage.c 
+
+clean:
+	rm -f *.o $(INCPATH)/*.o $(TRPATH)/*.o
+	rm -f $(LIB_TARGET) $(LIB_TARGET_CPP) 
+	rm -f y.tab.c y.tab.h lex.yy.c
+        
+
+task_construct.o:    task_construct.h element_construct.h \
+                     $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+element_construct.o: element_construct.h $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+element_usage.o:     element_usage.h $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+task_error.o:        task_error.h $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+tp.o:                $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+
+task_construct.p.o:   task_construct.h element_construct.h \
+                      $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+element_construct.p.o:element_construct.h $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+element_usage.p.o:    element_usage.h $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+task_error.p.o:       task_error.h $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+tp.p.o:               $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+
+transportAPI.o: tenet.h $(TRPATH)/tr_if.h response.h \
+                $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+tr_if.o:        $(TRPATH)/tr_if.h $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+serviceAPI.o:   $(TRPATH)/serviceAPI.h $(TRPATH)/service_if.h tenet.h \
+                $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+service_if.o:   $(TRPATH)/service_if.h $(INCPATH)/common.h $(INCPATH)/tosmsg.h $(MOTELIB)/tenet_task.h
+

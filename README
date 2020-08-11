@@ -1,0 +1,129 @@
+
+
+             Tenet-t2.1 (Tenet on tinyos-2.1)
+             ================================
+
+
+1. Intro
+
+    - This code is experimental version under devel.
+    - This code is not full port of Tenet. 
+      Some optional features are not ported yet.
+
+    - Only tested on telosb motes yet.
+
+
+
+2. Pre-requisite
+
+    We assume that you have background knowledge on;
+    - TinyOS      : (t1, t2, how to install, env setup, etc)
+    - Tenet
+      - you should already know about
+        - what 'mote' and 'master' are,
+        - that tinyos-task and Tenet-task are different,
+        - tinyos app. vs. Tenet app. vs. Tenet mote binary.
+
+    You should have;
+    - tinyos-2.x     CVS HEAD  (as of Feb.18.2009)
+
+    You should be able to run below ON YOUR OWN;
+    - tinyos-2.x/apps/Blink
+
+
+
+3. Environment setup
+
+    You should already have proper tinyos-2.x setup;
+    - TOSDIR, TOSROOT, MAKERULES.
+      (if you don't know what this is, you should not be here)
+
+    In the below instructions, we will assuming that you have 
+    the 'tenet-t2.1' code in '/opt/tenet-t2.1/' directory.
+    
+    You might also want to check section 8.3 once.
+
+
+
+4. Instructions on how to run Tenet
+
+   - Follow steps  5, 6, 7
+
+
+
+5. Install Tenet mote binary on motes
+
+    Assume you have 3 motes, each connected to
+    - mote1:  /dev/ttyUSB0
+    - mote2:  /dev/ttyUSB1
+    - mote3:  /dev/ttyUSB2
+
+    We will use mote1 as BaseStation, and 
+    mote2,3 as the 'Tenet' motes (a.k.a sensor nodes)
+
+       $ cd /opt/tenet-t2.1/mote/apps/BaseStation
+       $ make telosb install.1 bsl,/dev/ttyUSB0
+       $ cd /opt/tenet-t2.1/mote/apps/Tenet 
+       $ make telosb install.2 bsl,/dev/ttyUSB1
+       $ make telosb install.3 bsl,/dev/ttyUSB2
+
+
+
+6. Run Tenet master stack
+
+       $ cd /opt/tenet-t2.1/master
+       $ make
+       $ cd /opt/tenet-t2.1/tools/sf
+       $ make
+       $ cd /opt/tenet-t2.1/tools
+       $ ./tenet start -a 1 -c /dev/ttyUSB0 -r 57600 -b lqibase
+
+
+
+7. Run Tenet Applications
+
+    Example on how to run Tenet Blink application.
+
+       $ cd /opt/tenet-t2.1/apps
+       $ make
+       $ cd blink
+       $ ./blink
+       (Ctrl-C to stop the application)
+
+    You can also run other applications in other directories.
+
+
+
+8. Q/A and NOTEs
+
+   8.1. Tenet requires so many steps to run... bad?
+
+     - Well, yes, if you just want to run 
+       1 application, once, on one mote.
+       For example, Blink on one mote for 10 miutes,
+       then TinyOS requires 1 step,
+       but Tenet requires 2 + 1 + 1 steps.
+
+       But, if you think about running 
+       serveral application, several times, on serveral motes,
+       then Tenet takes less steps.
+       For example, if you want to run
+       Blink, Collect, CntToLeds for 5 miutes each on 20 motes,
+       then TinyOS requires 20 * 3  = 60 steps,
+       but Tenet requires 21 + 1 + 3 = 25 steps.
+
+
+   8.2. tools tested?
+
+     - nesc-1.3.0-1.fc9.i386.rpm
+       tinyos-tools-1.3.0-1.fc9.i386.rpm
+       msp430tools-base-0.1-20050607.i386.rpm
+       msp430tools-binutils-2.16-20050607.i386.rpm
+       msp430tools-gcc-3.2.3-20050607.i386.rpm
+       msp430tools-libc-20050308cvs-20050608.i386.rpm
+       msp430tools-libc-20080808-1.i386.rpm
+       msp430tools-python-tools-1.0-1.noarch.rpm
+
+     - (only tested on telosb motes yet)
+
+

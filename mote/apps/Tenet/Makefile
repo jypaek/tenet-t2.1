@@ -1,0 +1,4 @@
+COMPONENT=Tenet
+
+include ../Makerules
+

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+make telosb POWER=6 CH=23
+scp build/telosb/* jpaek@testbed:~/t2bin/Tenet/
+make clean
+
+cd ../BaseStation
+pwd
+make telosb POWER=6 CH=23
+scp build/telosb/* jpaek@testbed:~/t2bin/BaseStation/
+make clean
+cd -
+
