@@ -5,7 +5,7 @@
 - This code was previously at http://enl.usc.edu/enl/trunk/tenet-2.1 (no longer maintained), Embedded Networks Laboratory (ENL) at University of Southern California (USC). ENL has been renamed to [Networked Systems Laboratory (NSL)](https://nsl.usc.edu).
 - As one of the main authors of the code, I'm copying the code here for future reference.
 - tenet-t2.1 code works on top of TinyOS-2.x. 
-   - There is another version (tenet-t1) that works on top of TinyOS-1.x at github.com/jypaek/tenet-t1
+   - There is another version (tenet-t1) that works on top of TinyOS-1.x at [github.com/jypaek/tenet-t1](https://github.com/jypaek/tenet-t1)
     
 
 ## This is the code developed for,
